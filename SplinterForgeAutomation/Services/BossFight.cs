@@ -8,7 +8,7 @@ namespace SplinterForgeAutomation.Services
 {
     public class BossFight
     {
-        public async Task PerformBossFight(Player player)
+        public async Task<bool> PerformBossFight(Player player)
         {
             try
             {
@@ -69,6 +69,7 @@ namespace SplinterForgeAutomation.Services
                             if (jsonResponse.message != null && jsonResponse.message == "not enough mana!")
                             {
                                 Console.WriteLine("Not enough mana!");
+                                return false;
                             }
                             else if (jsonResponse.actions != null && jsonResponse.totalDmg != null && jsonResponse.points != null && jsonResponse.rewards != null)
                             {
@@ -79,27 +80,34 @@ namespace SplinterForgeAutomation.Services
                                 foreach (var reward in jsonResponse.rewards)
                                 {
                                     Console.WriteLine($"Type: {reward.type}, Name: {reward.name}, Quantity: {reward.qty}");
+                                    
                                 }
+                                return true;
                             }
                             else
                             {
                                 Console.WriteLine("Unknown response format.");
+                                return true;
                             }
                         }
                         else
                         {
                             Console.WriteLine($"Failed to make POST request. Status code: {postResponse.StatusCode}");
+                            return true;
                         }
                     }
                     else
                     {
                         Console.WriteLine($"Failed to get the encoded message. Status code: {getResponse.StatusCode}");
+                        return true;
                     }
                 }
+
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"An error occurred during boss fight: {ex.Message}");
+                return true;
             }
         }
     }
